@@ -4,18 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#fff4c7">
-<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="PoultryPal">
 <meta name="description" content="PoultryPal offline poultry farm manager">
 
 <title>PoultryPal 🐥</title>
-
-<!-- PWA Manifest & Standard Icons -->
-<link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><rect width='120' height='120' rx='28' fill='%23ffe99a'/><ellipse cx='60' cy='69' rx='34' ry='31' fill='%23fff8dc'/><circle cx='47' cy='32' r='13' fill='%23fff8dc'/><circle cx='73' cy='32' r='13' fill='%23fff8dc'/><circle cx='49' cy='60' r='3.5' fill='%23493b26'/><circle cx='71' cy='60' r='3.5' fill='%23493b26'/><path d='M55 69 L65 69 L60 76Z' fill='%23f29b38'/><ellipse cx='36' cy='70' rx='7' ry='4' fill='%23f6b8a5'/><ellipse cx='84' cy='70' rx='7' ry='4' fill='%23f6b8a5'/></svg>">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
 
 <style>
 :root{
@@ -356,7 +353,7 @@ footer{text-align:center;color:#958b79;font-size:12px;padding:24px}
 <div id="installBanner" class="install-banner hidden">
   <div>
     <strong>Install PoultryPal App</strong>
-    <span>Install on your device for quick offline access.</span>
+    <span>Install on your phone for quick offline access.</span>
   </div>
   <div style="display:flex;gap:6px">
     <button id="installAppBtn">Install</button>
@@ -404,12 +401,12 @@ const CHICK_DATA_URL = 'data:image/svg+xml;utf8,' + encodeURIComponent(CHICK_SVG
 // Standard Universal Units Dropdown options
 const UNIVERSAL_UNITS = "Kg,Gram,Quintal,Litre,ml,Bags (50 kg),Bags (25 kg),Birds / Count,Trays (30 eggs),Pieces,Hours,Days,Units (kWh),Truckload,Other";
 
-// --- Proper Service Worker Registration ---
+// --- PWA: register the real, same-origin service worker file ---
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js')
-      .then(reg => console.log('Service Worker registered with scope:', reg.scope))
-      .catch(err => console.error('Service Worker registration failed:', err));
+      .then(reg => console.log('PoultryPal offline service worker registered:', reg.scope))
+      .catch(err => console.warn('PoultryPal service worker registration failed:', err));
   });
 }
 
@@ -437,7 +434,12 @@ document.getElementById('dismissInstall').onclick = () => {
   sessionStorage.setItem('pp_dismiss_install', 'true');
 };
 
-// --- App Modules & Data Definitions ---
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  document.getElementById('installBanner').classList.add('hidden');
+});
+
+// --- App Modules & Data Definitions with Corrected Mortality, Pricing & Units ---
 const modules = [
   ['Chicks Purchased','🐣','chicks'],
   ['Chicks Mortality (Deaths)','🪦','mortality'],
@@ -541,7 +543,14 @@ const fields = {
   ]
 };
 
-let data = JSON.parse(localStorage.getItem('pp_data') || '[]');
+let data = [];
+try {
+  const stored = localStorage.getItem('pp_data');
+  data = stored ? JSON.parse(stored) : [];
+  if (!Array.isArray(data)) data = [];
+} catch (e) {
+  data = [];
+}
 let active = 'home';
 let editId = null;
 
@@ -846,6 +855,7 @@ function home(v) {
       <button id="quickAdd">＋ Quick Record</button>
     </div>
 
+    <!-- Flock Balance & Financial Cards -->
     <div class="grid">
       <div class="card stat"><small>Chicks Purchased</small><strong>${m.totalChicksBought} birds</strong></div>
       <div class="card stat" style="background:#fff4f2"><small>Chicks Died (Mortality)</small><strong style="color:#b23b20">${m.totalChicksDied} birds</strong></div>
@@ -861,6 +871,7 @@ function home(v) {
 
     ${isIos ? `<div class="notice">💡 <b>iPhone Tip:</b> Tap the <b>Share icon ⎋</b> at the bottom of Safari, then choose <b>"Add to Home Screen"</b> to install PoultryPal as an app.</div>` : ''}
 
+    <!-- Quick Graphical Financial Bar -->
     <div class="chart-box">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
         <h3 style="margin:0;color:#503f29">Revenue Status: In-Hand vs Pending</h3>
@@ -1021,6 +1032,7 @@ function formView(v, key, existing = {}) {
       </div>
 
       ${!isMort ? `
+        <!-- Unified Financial Calculation & Single In-Hand/Pending Box -->
         <div class="amountbox">
           <b>Financial Calculation & In-Hand Payment</b>
           <p class="muted" style="margin:5px 0 10px;font-size:13px">
@@ -1187,6 +1199,7 @@ function readForm(key, base) {
   return o;
 }
 
+// Comprehensive Dashboard & Graph Calculator View
 function reports(v) {
   const m = computeMetrics();
   const maxFinance = Math.max(m.totalIncome, m.totalExpenditure, 1);
@@ -1200,6 +1213,7 @@ function reports(v) {
       </div>
     </div>
 
+    <!-- 1. All-in-One Information Cards -->
     <div class="grid">
       <div class="card stat">
         <small>Total Chicks Purchased</small>
@@ -1263,6 +1277,7 @@ function reports(v) {
       </div>
     </div>
 
+    <!-- 2. Profit / Loss Visual Graph -->
     <div class="chart-box">
       <h3 style="margin:0 0 4px;color:#503f29">Profit / Loss & Revenue Graph</h3>
       <p class="muted" style="margin:0 0 14px;font-size:13px">Proportional graph of revenue, in-hand cash, pending payments, and expenditure</p>
@@ -1299,6 +1314,7 @@ function reports(v) {
       </div>
     </div>
 
+    <!-- 3. Expenses Distribution Graph -->
     <div class="chart-box">
       <h3 style="margin:0 0 4px;color:#503f29">Expense Category Distribution</h3>
       <p class="muted" style="margin:0 0 14px;font-size:13px">Breakdown across chicks purchase, feed, medicine, and overheads</p>
@@ -1335,6 +1351,7 @@ function reports(v) {
       </div>
     </div>
 
+    <!-- 4. Interactive Simulation & Graph Calculator -->
     <div class="chart-box">
       <h3 style="margin:0 0 6px;color:#503f29">Interactive Profit / Loss Simulator</h3>
       <p class="muted" style="margin:0 0 12px;font-size:13px">Simulate sales and extra costs on remaining flock (${m.liveBirds} birds)</p>
@@ -1450,8 +1467,7 @@ function csv() {
     keys.join(','),
     ...data.map(x => keys.map(k => '"' + String(x[k] ?? '').replace(/"/g, '""') + '"').join(','))
   ];
-  download(new Blob([rows.join('
-')], {type: 'text/csv'}), `PoultryPal-Records-${new Date().toISOString().slice(0,10)}.csv`);
+  download(new Blob([rows.join('\n')], {type: 'text/csv'}), `PoultryPal-Records-${new Date().toISOString().slice(0,10)}.csv`);
   toast('CSV exported');
 }
 
@@ -1486,6 +1502,7 @@ $('restoreFile').onchange = async e => {
   e.target.value = '';
 };
 
+// Chick photo customizer
 $('photoInput').onchange = async e => {
   const f = e.target.files[0];
   if (!f) return;
