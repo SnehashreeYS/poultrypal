@@ -1,0 +1,1517 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fff4c7">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="PoultryPal">
+<meta name="description" content="PoultryPal offline poultry farm manager">
+
+<title>PoultryPal 🐥</title>
+
+<!-- PWA Manifest & Standard Icons -->
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><rect width='120' height='120' rx='28' fill='%23ffe99a'/><ellipse cx='60' cy='69' rx='34' ry='31' fill='%23fff8dc'/><circle cx='47' cy='32' r='13' fill='%23fff8dc'/><circle cx='73' cy='32' r='13' fill='%23fff8dc'/><circle cx='49' cy='60' r='3.5' fill='%23493b26'/><circle cx='71' cy='60' r='3.5' fill='%23493b26'/><path d='M55 69 L65 69 L60 76Z' fill='%23f29b38'/><ellipse cx='36' cy='70' rx='7' ry='4' fill='%23f6b8a5'/><ellipse cx='84' cy='70' rx='7' ry='4' fill='%23f6b8a5'/></svg>">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<style>
+:root{
+  --cream:#fffaf0;
+  --yellow:#ffe99a;
+  --yellow-deep:#f4d77b;
+  --green:#dcefd5;
+  --green-dark:#286b24;
+  --orange:#ffd9b5;
+  --brown:#70543b;
+  --ink:#3d382f;
+  --muted:#817968;
+  --white:#fff;
+  --line:#eee4d3;
+  --shadow:0 5px 18px #6d563014;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--cream);
+  color:var(--ink);
+  font:15px system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;
+  -webkit-tap-highlight-color:transparent;
+}
+header{
+  background:linear-gradient(120deg,#fff0b8,#fff8df);
+  padding:16px;
+  border-bottom:1px solid var(--line);
+}
+.top{
+  max-width:1100px;
+  margin:auto;
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+.hero{
+  width:72px;
+  height:72px;
+  border-radius:22px;
+  object-fit:cover;
+  background:#ffe99a;
+  border:3px solid white;
+  box-shadow:var(--shadow);
+}
+h1{
+  font-size:24px;
+  margin:0;
+  color:#61482f;
+}
+header p{margin:2px 0 4px;color:#88734e}
+.top-actions{
+  margin-left:auto;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+button,.btn{
+  border:0;
+  border-radius:12px;
+  padding:10px 14px;
+  background:var(--yellow-deep);
+  color:#493b26;
+  font-weight:650;
+  font-size:14px;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-decoration:none;
+}
+button.secondary{background:#edf2e5;color:#43543d}
+button.danger{background:#ffe1d9;color:#8c3d2d}
+button:disabled{opacity:.5;cursor:not-allowed}
+.install-banner{
+  background:#ebf5e7;
+  border-bottom:1px solid #c9e4be;
+  padding:10px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  font-size:14px;
+  color:#315424;
+}
+.install-banner strong{display:block}
+.install-banner button{padding:6px 12px;font-size:13px}
+main{
+  max-width:1100px;
+  margin:18px auto;
+  padding:0 14px 90px;
+}
+.nav{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding:4px 0 14px;
+  -webkit-overflow-scrolling:touch;
+}
+.nav button{
+  white-space:nowrap;
+  background:#fff;
+  border:1px solid var(--line);
+  flex-shrink:0;
+}
+.nav button.active{
+  background:#e5f0dc;
+  border-color:#c9dfbc;
+  color:#2f4a21;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(155px,1fr));
+  gap:12px;
+}
+.card{
+  background:white;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:16px;
+  box-shadow:var(--shadow);
+}
+.stat small{color:var(--muted);font-size:13px}
+.stat strong{display:block;font-size:22px;margin-top:6px;color:#423624}
+.section-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin:14px 0 14px;
+}
+.section-head h2{font-size:20px;margin:0;color:#503f29}
+.muted{color:var(--muted)}
+.modules{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
+  gap:12px;
+}
+.module{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  text-align:left;
+  background:white;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:14px;
+  min-height:72px;
+  box-shadow:var(--shadow);
+  cursor:pointer;
+}
+.emoji{font-size:26px}
+.module span:last-child{font-weight:650;color:#493b26}
+.formgrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:12px;
+}
+.field label{display:block;font-size:13px;color:#756b5c;margin:0 0 5px}
+.field input,.field select,.field textarea{
+  width:100%;
+  border:1px solid #e5dccd;
+  border-radius:11px;
+  padding:11px;
+  background:#fffdf9;
+  color:var(--ink);
+  font:inherit;
+}
+.field textarea{min-height:75px}
+.amountbox{
+  background:#fff8df;
+  border:1px dashed #e5ca71;
+  border-radius:14px;
+  padding:14px;
+  margin:14px 0;
+}
+.amountrow{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.amountrow label{font-size:13.5px;cursor:pointer}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.record{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:center;
+  padding:12px 0;
+  border-bottom:1px solid var(--line);
+}
+.record:last-child{border:0}
+.record b{display:block;font-size:15px;color:#433420}
+.pill{
+  display:inline-block;
+  background:#edf2e5;
+  border-radius:16px;
+  padding:3px 9px;
+  font-size:12px;
+  color:#435c36;
+  font-weight:600;
+  margin-top:4px;
+}
+.pill.pending{background:#ffe8e2;color:#9b321a}
+.pill.received{background:#e2f5dc;color:#286b24}
+.empty{text-align:center;padding:32px 14px;color:var(--muted)}
+.hidden{display:none!important}
+.photo-tools{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+footer{text-align:center;color:#958b79;font-size:12px;padding:24px}
+.notice{
+  background:#fff2cf;
+  border-radius:12px;
+  padding:12px 14px;
+  color:#725d34;
+  font-size:13px;
+  margin:12px 0;
+  line-height:1.45;
+}
+.search{
+  width:100%;
+  max-width:320px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px 14px;
+  background:white;
+  margin-bottom:12px;
+  font:inherit;
+}
+/* Modal & Toast styles */
+.modal-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(30,25,20,0.5);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+  z-index:999;
+}
+.modal-card{
+  background:white;
+  max-width:620px;
+  width:100%;
+  max-height:90vh;
+  overflow-y:auto;
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.25);
+}
+.toast{
+  position:fixed;
+  bottom:24px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#2e261d;
+  color:white;
+  padding:10px 18px;
+  border-radius:24px;
+  font-size:14px;
+  z-index:1000;
+  box-shadow:0 6px 16px rgba(0,0,0,0.25);
+  pointer-events:none;
+  transition:opacity .25s ease;
+}
+/* Dashboard and Chart styles */
+.chart-box{
+  background:white;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:16px;
+  box-shadow:var(--shadow);
+  margin-top:14px;
+}
+.chart-bars{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  margin-top:14px;
+}
+.bar-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:13.5px;
+}
+.bar-label{
+  width:145px;
+  flex-shrink:0;
+  color:#554a39;
+  font-weight:550;
+}
+.bar-track{
+  flex-grow:1;
+  background:#f4ece0;
+  height:24px;
+  border-radius:12px;
+  overflow:hidden;
+  position:relative;
+  display:flex;
+}
+.bar-fill{
+  height:100%;
+  transition:width .4s ease;
+}
+.bar-val{
+  min-width:95px;
+  text-align:right;
+  font-weight:700;
+  color:#423624;
+}
+.calc-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:12px;
+  margin-top:12px;
+}
+.badge-tag{
+  padding:3px 8px;
+  border-radius:8px;
+  font-size:11px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+}
+.badge-exp{background:#ffe3db;color:#a8351e}
+.badge-inc{background:#dcf2d7;color:#236b1d}
+.badge-mort{background:#f1e0df;color:#7a1d13}
+@media(max-width:540px){
+  .top{align-items:flex-start}
+  .hero{width:60px;height:60px}
+  .top-actions button{font-size:12px;padding:8px 10px}
+  .section-head{align-items:flex-start;flex-direction:column}
+  .bar-row{flex-direction:column;align-items:flex-start;gap:4px}
+  .bar-label{width:100%}
+  .bar-track{width:100%}
+  .bar-val{width:100%;text-align:left}
+}
+</style>
+</head>
+<body>
+
+<div id="installBanner" class="install-banner hidden">
+  <div>
+    <strong>Install PoultryPal App</strong>
+    <span>Install on your device for quick offline access.</span>
+  </div>
+  <div style="display:flex;gap:6px">
+    <button id="installAppBtn">Install</button>
+    <button class="secondary" id="dismissInstall">Dismiss</button>
+  </div>
+</div>
+
+<header>
+  <div class="top">
+    <div>
+      <img id="heroPhoto" class="hero" src="" alt="Baby chick icon">
+    </div>
+    <div>
+      <h1 id="appHeaderTitle">PoultryPal 🐥</h1>
+      <p>Plan • Track • Grow</p>
+      <div class="photo-tools">
+        <label class="btn" for="photoInput" style="font-size:12px;padding:6px 10px">Change chick photo</label>
+        <input id="photoInput" type="file" accept="image/*" hidden>
+        <button class="secondary" id="resetPhoto" style="font-size:12px;padding:6px 10px">Restore default</button>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="secondary" id="backupBtn">Backup</button>
+      <button class="secondary" id="restoreBtn">Restore</button>
+      <input id="restoreFile" type="file" accept="application/json" hidden>
+    </div>
+  </div>
+</header>
+
+<main>
+  <nav class="nav" id="nav"></nav>
+  <section id="view"></section>
+</main>
+
+<footer>PoultryPal stores your records safely on this device. Back up regularly.</footer>
+
+<div id="modalContainer" class="hidden"></div>
+<div id="toast" class="toast hidden"></div>
+
+<script>
+// --- SVG Chick Icon (Base64) ---
+const CHICK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="28" fill="#ffe99a"/><ellipse cx="60" cy="69" rx="34" ry="31" fill="#fff8dc"/><circle cx="47" cy="32" r="13" fill="#fff8dc"/><circle cx="73" cy="32" r="13" fill="#fff8dc"/><circle cx="49" cy="60" r="3.5" fill="#493b26"/><circle cx="71" cy="60" r="3.5" fill="#493b26"/><path d="M55 69 L65 69 L60 76Z" fill="#f29b38"/><ellipse cx="36" cy="70" rx="7" ry="4" fill="#f6b8a5"/><ellipse cx="84" cy="70" rx="7" ry="4" fill="#f6b8a5"/></svg>`;
+const CHICK_DATA_URL = 'data:image/svg+xml;utf8,' + encodeURIComponent(CHICK_SVG);
+
+// Standard Universal Units Dropdown options
+const UNIVERSAL_UNITS = "Kg,Gram,Quintal,Litre,ml,Bags (50 kg),Bags (25 kg),Birds / Count,Trays (30 eggs),Pieces,Hours,Days,Units (kWh),Truckload,Other";
+
+// --- Proper Service Worker Registration ---
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('Service Worker registered with scope:', reg.scope))
+      .catch(err => console.error('Service Worker registration failed:', err));
+  });
+}
+
+// Installation prompt handling
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  if (!sessionStorage.getItem('pp_dismiss_install')) {
+    document.getElementById('installBanner').classList.remove('hidden');
+  }
+});
+
+document.getElementById('installAppBtn').onclick = async () => {
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    const { outcome } = await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    document.getElementById('installBanner').classList.add('hidden');
+  }
+};
+
+document.getElementById('dismissInstall').onclick = () => {
+  document.getElementById('installBanner').classList.add('hidden');
+  sessionStorage.setItem('pp_dismiss_install', 'true');
+};
+
+// --- App Modules & Data Definitions ---
+const modules = [
+  ['Chicks Purchased','🐣','chicks'],
+  ['Chicks Mortality (Deaths)','🪦','mortality'],
+  ['Medicine & Vaccination','💉','medicine'],
+  ['Feed Management','🌾','feed'],
+  ['Other Expenses','🧾','expenses'],
+  ['Egg Production','🥚','eggs'],
+  ['Bird Sales','🐔','sales'],
+  ['Other Income','💰','income'],
+  ['Dashboard & Reports','📊','reports'],
+  ['Settings','⚙️','settings']
+];
+
+const fields = {
+  chicks:[
+    ['date','Purchase date','date'],
+    ['batch','Batch name / number','text'],
+    ['breed','Breed / type','text'],
+    ['quantity','Number of chicks purchased','number'],
+    ['quantityUnit','Chicks unit','select:Birds / Count,Boxes,Cartons'],
+    ['rate','Cost per chick (₹)','number'],
+    ['supplier','Supplier','text'],
+    ['transport','Transport charges (₹)','number'],
+    ['initialWeight','Initial average chick weight','number'],
+    ['weightUnit','Initial weight unit','select:Gram,Kg'],
+    ['notes','Remarks','textarea']
+  ],
+  mortality:[
+    ['date','Date of death / mortality','date'],
+    ['batch','Batch name / number','text'],
+    ['quantity','Number of chicks died (Mortality count)','number'],
+    ['quantityUnit','Unit','select:Birds / Count'],
+    ['cause','Probable cause / reason','select:Disease,Heat stroke,Suffocation,Cold,Predator,Weak chick,Unknown,Other'],
+    ['notes','Symptoms / post-mortem notes','textarea']
+  ],
+  medicine:[
+    ['date','Date','date'],
+    ['name','Medicine / vaccine name','text'],
+    ['purpose','Purpose / Disease treated','text'],
+    ['quantity','Quantity / Dosage','number'],
+    ['quantityUnit','Measurement unit','select:ml,Litre,Gram,Kg,Vials / Doses,Tablets,Packs'],
+    ['rate','Total cost of medicine (₹)','number'],
+    ['birds','Birds treated (Bird count)','number'],
+    ['nextDate','Next dose date','date'],
+    ['supplier','Supplier','text'],
+    ['notes','Remarks / dosage notes','textarea']
+  ],
+  feed:[
+    ['date','Purchase date','date'],
+    ['type','Feed type','select:Pre-starter,Starter,Grower,Finisher,Layer,Broiler Mash,Other'],
+    ['quantity','Quantity purchased','number'],
+    ['quantityUnit','Feed measurement unit',`select:${UNIVERSAL_UNITS}`],
+    ['rate','Price per selected unit (₹)','number'],
+    ['supplier','Supplier','text'],
+    ['consumed','Quantity consumed','number'],
+    ['consumedUnit','Consumed unit',`select:${UNIVERSAL_UNITS}`],
+    ['batch','Batch (if applicable)','text'],
+    ['notes','Remarks','textarea']
+  ],
+  expenses:[
+    ['date','Date','date'],
+    ['category','Category','select:Electricity,Water,Labour,Transport,Cleaning & Disinfection,Equipment,Repairs,Packaging,Shed maintenance,Miscellaneous'],
+    ['description','Description','text'],
+    ['quantity','Quantity / Duration','number'],
+    ['quantityUnit','Measurement unit',`select:${UNIVERSAL_UNITS}`],
+    ['rate','Rate per unit (₹)','number'],
+    ['notes','Remarks','textarea']
+  ],
+  eggs:[
+    ['date','Date','date'],
+    ['batch','Batch','text'],
+    ['collected','Eggs collected (Count)','number'],
+    ['good','Good saleable eggs (Count)','number'],
+    ['broken','Broken / Damaged eggs (Count)','number'],
+    ['sold','Eggs sold (Count)','number'],
+    ['soldUnit','Sale unit','select:Eggs (Count),Trays (30 eggs),Cartons'],
+    ['remaining','Remaining eggs stock (Count)','number'],
+    ['rate','Selling rate (₹ per egg / tray)','number'],
+    ['notes','Remarks','textarea']
+  ],
+  sales:[
+    ['date','Sale date','date'],
+    ['batch','Batch','text'],
+    ['pricingModel','How is selling rate calculated?','select:Per Kilogram (₹/Kg),Per Bird (₹/Bird),Per Quintal (₹/Quintal),Per Gram (₹/Gram)'],
+    ['birds','Number of birds sold (Count)','number'],
+    ['soldUnit','Bird count unit','select:Birds / Count'],
+    ['weight','Total weight of birds sold','number'],
+    ['weightUnit','Weight measurement unit','select:Kg,Quintal,Gram'],
+    ['rate','Selling rate (₹ based on above selection)','number'],
+    ['buyer','Buyer name / phone reference','text'],
+    ['notes','Remarks','textarea']
+  ],
+  income:[
+    ['date','Date','date'],
+    ['category','Category','select:Manure / Fertilizer,Feathers / Waste,Empty Feed Bags,Equipment Rent,Miscellaneous'],
+    ['description','Description','text'],
+    ['quantity','Quantity sold','number'],
+    ['quantityUnit','Measurement unit',`select:${UNIVERSAL_UNITS}`],
+    ['rate','Rate per unit (₹)','number'],
+    ['notes','Remarks','textarea']
+  ]
+};
+
+let data = JSON.parse(localStorage.getItem('pp_data') || '[]');
+let active = 'home';
+let editId = null;
+
+const $ = id => document.getElementById(id);
+const money = n => '₹' + (Number(n || 0)).toLocaleString('en-IN', {maximumFractionDigits:2});
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function toast(msg) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.remove('hidden');
+  t.style.opacity = '1';
+  setTimeout(() => {
+    t.style.opacity = '0';
+    setTimeout(() => t.classList.add('hidden'), 250);
+  }, 2200);
+}
+
+function showConfirm(title, message, onConfirm) {
+  const c = $('modalContainer');
+  c.innerHTML = `
+    <div class="modal-overlay">
+      <div class="modal-card">
+        <h3 style="margin:0 0 8px;color:#503f29">${esc(title)}</h3>
+        <p style="margin:0 0 18px;color:#6d6252;line-height:1.45">${esc(message)}</p>
+        <div style="display:flex;gap:10px;justify-content:flex-end">
+          <button class="secondary" id="modalCancel">Cancel</button>
+          <button class="danger" id="modalConfirm">Confirm</button>
+        </div>
+      </div>
+    </div>
+  `;
+  c.classList.remove('hidden');
+  $('modalCancel').onclick = () => c.classList.add('hidden');
+  $('modalConfirm').onclick = () => {
+    c.classList.add('hidden');
+    onConfirm();
+  };
+}
+
+function openRecordDashboard(recordId) {
+  const r = data.find(x => x.id === recordId);
+  if (!r) return;
+  const isExp = ['chicks','medicine','feed','expenses'].includes(r.module);
+  const isMort = r.module === 'mortality';
+  const totalAmt = amount(r);
+  const rec = num(r.received);
+  const pend = r.pending !== undefined && r.pending !== '' ? num(r.pending) : Math.max(0, totalAmt - rec);
+
+  const modName = modules.find(m => m[2] === r.module)?.[0] || r.module;
+  const title = r.batch || r.name || r.description || r.category || r.type || modName;
+
+  const c = $('modalContainer');
+  c.innerHTML = `
+    <div class="modal-overlay">
+      <div class="modal-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <span class="badge-tag ${isMort?'badge-mort':isExp?'badge-exp':'badge-inc'}">${isMort?'Mortality Entry':isExp?'Expense Record':'Income Record'}</span>
+            <h2 style="margin:6px 0 2px;color:#493822">${esc(title)}</h2>
+            <div class="muted">${esc(r.date || 'No date')} • ${esc(modName)}</div>
+          </div>
+          <button class="secondary" id="modalClose" style="padding:4px 10px;font-size:16px">✕</button>
+        </div>
+
+        ${isMort ? `
+          <div class="card stat" style="background:#fbeae6;margin-top:16px">
+            <small>Chicks Died</small>
+            <strong style="color:#a82f1b">${num(r.quantity)} Birds</strong>
+            <div class="muted" style="margin-top:4px">Cause: ${esc(r.cause || 'Not specified')}</div>
+          </div>
+        ` : `
+          <div class="grid" style="margin-top:16px">
+            <div class="card stat" style="background:#fffaf0">
+              <small>Total Billed / Value</small>
+              <strong>${money(totalAmt)}</strong>
+            </div>
+            ${!isExp ? `
+              <div class="card stat" style="background:#f0faee">
+                <small>Amount Received (In Hand)</small>
+                <strong style="color:#286b24">${money(rec)}</strong>
+              </div>
+              <div class="card stat" style="background:#fff2ef">
+                <small>Pending Amount Due</small>
+                <strong style="color:#b23b20">${money(pend)}</strong>
+              </div>
+            ` : `
+              <div class="card stat" style="background:#fff2ef">
+                <small>Expense Incurred</small>
+                <strong style="color:#b23b20">${money(totalAmt)}</strong>
+              </div>
+            `}
+          </div>
+
+          <div class="chart-box" style="margin-top:14px">
+            <h4 style="margin:0 0 10px;color:#59462f">Visual Breakdown</h4>
+            <div class="chart-bars">
+              ${!isExp ? `
+                <div class="bar-row">
+                  <div class="bar-label">Received (${totalAmt>0?Math.round((rec/totalAmt)*100):0}%)</div>
+                  <div class="bar-track">
+                    <div class="bar-fill" style="width:${totalAmt>0?Math.min(100,(rec/totalAmt)*100):0}%;background:#48a03f"></div>
+                  </div>
+                  <div class="bar-val" style="color:#286b24">${money(rec)}</div>
+                </div>
+                <div class="bar-row">
+                  <div class="bar-label">Pending (${totalAmt>0?Math.round((pend/totalAmt)*100):0}%)</div>
+                  <div class="bar-track">
+                    <div class="bar-fill" style="width:${totalAmt>0?Math.min(100,(pend/totalAmt)*100):0}%;background:#e86445"></div>
+                  </div>
+                  <div class="bar-val" style="color:#b23b20">${money(pend)}</div>
+                </div>
+              ` : `
+                <div class="bar-row">
+                  <div class="bar-label">Expense Impact</div>
+                  <div class="bar-track">
+                    <div class="bar-fill" style="width:100%;background:#e86445"></div>
+                  </div>
+                  <div class="bar-val" style="color:#b23b20">${money(totalAmt)}</div>
+                </div>
+              `}
+            </div>
+          </div>
+        `}
+
+        <div class="card" style="margin-top:14px;background:#fdfdfc">
+          <h4 style="margin:0 0 8px;color:#59462f">Recorded Entry Details</h4>
+          <div style="font-size:13.5px;line-height:1.7;color:#4c4235">
+            ${Object.keys(r).filter(k=>!['id','module','autoAmount','manualAmount','amountMode','updatedAt'].includes(k)).map(k => `
+              <div><b>${esc(k.charAt(0).toUpperCase() + k.slice(1))}:</b> ${esc(r[k])}</div>
+            `).join('')}
+          </div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:16px;justify-content:flex-end">
+          <button class="secondary" id="modalEdit">Edit This Record</button>
+          <button id="modalDone">Done</button>
+        </div>
+      </div>
+    </div>
+  `;
+  c.classList.remove('hidden');
+  $('modalClose').onclick = $('modalDone').onclick = () => c.classList.add('hidden');
+  $('modalEdit').onclick = () => {
+    c.classList.add('hidden');
+    editId = r.id;
+    formView($('view'), r.module, r);
+  };
+}
+
+function save() {
+  localStorage.setItem('pp_data', JSON.stringify(data));
+}
+
+function num(v) {
+  if (v === null || v === undefined || String(v).trim() === '') return 0;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function amount(r) {
+  if (r.module === 'mortality') return 0;
+  if (r.amountMode === 'manual' && r.manualAmount !== '' && r.manualAmount != null) return num(r.manualAmount);
+  return num(r.autoAmount);
+}
+
+function autoAmount(obj) {
+  if (obj.module === 'mortality') return 0;
+  const q = num(obj.quantity), rate = num(obj.rate);
+  if (obj.module === 'chicks') return (q * rate) + num(obj.transport);
+  if (['feed','expenses','income'].includes(obj.module)) return q * rate;
+  if (obj.module === 'medicine') {
+    return rate > 0 ? (q > 0 ? q * rate : rate) : 0;
+  }
+  if (obj.module === 'eggs') return num(obj.sold) * rate;
+  if (obj.module === 'sales') {
+    const model = obj.pricingModel || 'Per Kilogram (₹/Kg)';
+    if (model.includes('Per Bird')) {
+      return num(obj.birds) * rate;
+    } else if (model.includes('Per Quintal')) {
+      const w = num(obj.weight);
+      const unit = obj.weightUnit || 'Kg';
+      const weightInQuintal = unit === 'Quintal' ? w : (unit === 'Kg' ? w / 100 : w / 100000);
+      return weightInQuintal * rate;
+    } else if (model.includes('Per Gram')) {
+      const w = num(obj.weight);
+      const unit = obj.weightUnit || 'Kg';
+      const weightInGrams = unit === 'Gram' ? w : (unit === 'Kg' ? w * 1000 : w * 100000);
+      return weightInGrams * rate;
+    } else {
+      const w = num(obj.weight);
+      const unit = obj.weightUnit || 'Kg';
+      const weightInKg = unit === 'Kg' ? w : (unit === 'Gram' ? w / 1000 : w * 100);
+      return (weightInKg > 0 ? weightInKg : num(obj.birds)) * rate;
+    }
+  }
+  return 0;
+}
+
+data.forEach(r => {
+  if (r.amountMode !== 'manual') r.autoAmount = autoAmount(r);
+});
+save();
+
+function renderNav() {
+  $('nav').innerHTML = `<button class="${active==='home'?'active':''}" data-go="home">🏠 Home</button>` +
+    modules.map(m => `<button data-go="${m[2]}" class="${active===m[2]?'active':''}">${m[1]} ${m[0]}</button>`).join('');
+  $('nav').querySelectorAll('button').forEach(b => b.onclick = () => go(b.dataset.go));
+}
+
+function go(v) {
+  active = v;
+  editId = null;
+  render();
+}
+
+function computeMetrics() {
+  const totalChicksBought = data.filter(x => x.module === 'chicks').reduce((s,x) => s + num(x.quantity), 0);
+  const totalChicksDied = data.filter(x => x.module === 'mortality').reduce((s,x) => s + num(x.quantity), 0);
+  const totalBirdsSold = data.filter(x => x.module === 'sales').reduce((s,x) => s + num(x.birds), 0);
+
+  const liveBirds = Math.max(0, totalChicksBought - totalChicksDied - totalBirdsSold);
+
+  const totalEggsCollected = data.filter(x => x.module === 'eggs').reduce((s,x) => s + num(x.collected), 0);
+  const totalEggsSold = data.filter(x => x.module === 'eggs').reduce((s,x) => s + num(x.sold), 0);
+
+  const chicksCost = data.filter(x => x.module === 'chicks').reduce((s,x) => s + amount(x), 0);
+  const medicineCost = data.filter(x => x.module === 'medicine').reduce((s,x) => s + amount(x), 0);
+  const feedCost = data.filter(x => x.module === 'feed').reduce((s,x) => s + amount(x), 0);
+  const otherExpenses = data.filter(x => x.module === 'expenses').reduce((s,x) => s + amount(x), 0);
+  const totalExpenditure = chicksCost + medicineCost + feedCost + otherExpenses;
+
+  const birdSalesVal = data.filter(x => x.module === 'sales').reduce((s,x) => s + amount(x), 0);
+  const eggSalesVal = data.filter(x => x.module === 'eggs').reduce((s,x) => s + amount(x), 0);
+  const otherIncomeVal = data.filter(x => x.module === 'income').reduce((s,x) => s + amount(x), 0);
+  const totalIncome = birdSalesVal + eggSalesVal + otherIncomeVal;
+
+  const incomeRecords = data.filter(x => ['sales','eggs','income'].includes(x.module));
+  let incomeReceived = 0;
+  let incomePending = 0;
+
+  incomeRecords.forEach(r => {
+    const val = amount(r);
+    const rec = num(r.received);
+    const pend = r.pending !== undefined && r.pending !== '' ? num(r.pending) : Math.max(0, val - rec);
+    incomeReceived += rec;
+    incomePending += pend;
+  });
+
+  if (incomeReceived === 0 && incomePending === 0 && totalIncome > 0) {
+    incomeReceived = totalIncome;
+  }
+
+  const netBalance = incomeReceived - totalExpenditure;
+  const netProfitLoss = totalIncome - totalExpenditure;
+
+  return {
+    totalChicksBought,
+    totalChicksDied,
+    totalBirdsSold,
+    liveBirds,
+    totalEggsCollected,
+    totalEggsSold,
+    chicksCost,
+    medicineCost,
+    feedCost,
+    otherExpenses,
+    totalExpenditure,
+    birdSalesVal,
+    eggSalesVal,
+    otherIncomeVal,
+    totalIncome,
+    incomeReceived,
+    incomePending,
+    netBalance,
+    netProfitLoss
+  };
+}
+
+function render() {
+  renderNav();
+  const v = $('view');
+  const farmName = localStorage.getItem('pp_farm');
+  $('appHeaderTitle').textContent = farmName ? `${farmName} 🐥` : 'PoultryPal 🐥';
+
+  if (active === 'home') return home(v);
+  if (active === 'reports') return reports(v);
+  if (active === 'settings') return settings(v);
+  moduleView(v, active);
+}
+
+function home(v) {
+  const m = computeMetrics();
+  const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+  v.innerHTML = `
+    <div class="section-head">
+      <div>
+        <h2>Farm Overview Dashboard 📊</h2>
+        <div class="muted">Live flock balance, cash flow, mortality, and sales</div>
+      </div>
+      <button id="quickAdd">＋ Quick Record</button>
+    </div>
+
+    <div class="grid">
+      <div class="card stat"><small>Chicks Purchased</small><strong>${m.totalChicksBought} birds</strong></div>
+      <div class="card stat" style="background:#fff4f2"><small>Chicks Died (Mortality)</small><strong style="color:#b23b20">${m.totalChicksDied} birds</strong></div>
+      <div class="card stat"><small>Birds Sold</small><strong>${m.totalBirdsSold} birds</strong></div>
+      <div class="card stat" style="background:#eaf5e6"><small>Live Chicks Remaining</small><strong style="color:#286b24">${m.liveBirds} birds</strong></div>
+      <div class="card stat"><small>Total Expenses</small><strong style="color:#b23b20">${money(m.totalExpenditure)}</strong></div>
+      <div class="card stat"><small>Total Sales Revenue</small><strong style="color:#286b24">${money(m.totalIncome)}</strong></div>
+      <div class="card stat"><small>In-Hand Received</small><strong style="color:#286b24">${money(m.incomeReceived)}</strong></div>
+      <div class="card stat"><small>Pending Money</small><strong style="color:#e86445">${money(m.incomePending)}</strong></div>
+      <div class="card stat"><small>Net In-Hand Balance</small><strong style="color:${m.netBalance>=0?'#286b24':'#b23b20'}">${money(m.netBalance)}</strong></div>
+      <div class="card stat"><small>Net Profit / Loss</small><strong style="color:${m.netProfitLoss>=0?'#286b24':'#b23b20'}">${money(m.netProfitLoss)}</strong></div>
+    </div>
+
+    ${isIos ? `<div class="notice">💡 <b>iPhone Tip:</b> Tap the <b>Share icon ⎋</b> at the bottom of Safari, then choose <b>"Add to Home Screen"</b> to install PoultryPal as an app.</div>` : ''}
+
+    <div class="chart-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <h3 style="margin:0;color:#503f29">Revenue Status: In-Hand vs Pending</h3>
+        <span class="pill">${m.totalIncome>0?Math.round((m.incomeReceived/m.totalIncome)*100):0}% Received</span>
+      </div>
+      <div class="chart-bars">
+        <div class="bar-row">
+          <div class="bar-label">In-Hand Cash Received</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${m.totalIncome>0?Math.min(100,(m.incomeReceived/m.totalIncome)*100):0}%;background:#48a03f"></div>
+          </div>
+          <div class="bar-val" style="color:#286b24">${money(m.incomeReceived)}</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Pending Collection</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${m.totalIncome>0?Math.min(100,(m.incomePending/m.totalIncome)*100):0}%;background:#f07d58"></div>
+          </div>
+          <div class="bar-val" style="color:#c2472b">${money(m.incomePending)}</div>
+        </div>
+      </div>
+      <div style="margin-top:12px;display:flex;justify-content:flex-end">
+        <button class="secondary" id="viewFullReports">Open Full Dashboard & Calculator ➔</button>
+      </div>
+    </div>
+
+    <div class="section-head" style="margin-top:20px">
+      <h2>Farm Management Modules</h2>
+    </div>
+    <div class="modules">
+      ${modules.map(m => `<button class="module" data-go="${m[2]}"><span class="emoji">${m[1]}</span><span>${m[0]}</span></button>`).join('')}
+    </div>
+  `;
+
+  v.querySelectorAll('[data-go]').forEach(b => b.onclick = () => go(b.dataset.go));
+  $('quickAdd').onclick = () => go('sales');
+  $('viewFullReports').onclick = () => go('reports');
+}
+
+function moduleView(v, key) {
+  const list = data.filter(x => x.module === key);
+  const modTitle = modules.find(m => m[2] === key)?.[0] || key;
+
+  v.innerHTML = `
+    <div class="section-head">
+      <div>
+        <h2>${modTitle}</h2>
+        <div class="muted">Click any record card to view its dedicated mini dashboard</div>
+      </div>
+      <button id="addRecord">＋ Add Record</button>
+    </div>
+    <input class="search" id="search" placeholder="Search ${modTitle.toLowerCase()}…">
+    <div class="card" id="records">
+      ${list.length ? list.slice().reverse().map(recordHtml).join('') : '<div class="empty">No records yet. Tap "+ Add Record" to add your first entry 🌱</div>'}
+    </div>
+  `;
+
+  $('addRecord').onclick = () => formView(v, key);
+  $('search').oninput = e => {
+    const q = e.target.value.toLowerCase();
+    $('records').innerHTML = list.filter(x => JSON.stringify(x).toLowerCase().includes(q)).slice().reverse().map(recordHtml).join('') || '<div class="empty">No matching records found</div>';
+    wireRecordButtons();
+  };
+  wireRecordButtons();
+}
+
+function recordHtml(r) {
+  const title = r.batch || r.name || r.description || r.category || r.type || modules.find(m=>m[2]===r.module)?.[0] || 'Record';
+  const date = r.date || 'No date';
+  const tot = amount(r);
+  const isIncome = ['sales','eggs','income'].includes(r.module);
+  const isMort = r.module === 'mortality';
+
+  let statusBadge = '';
+  if (isMort) {
+    statusBadge = `<span class="pill pending">Died: ${num(r.quantity)} Birds (${esc(r.cause || 'Unknown')})</span>`;
+  } else if (isIncome) {
+    const rec = num(r.received);
+    const pend = r.pending !== undefined && r.pending !== '' ? num(r.pending) : Math.max(0, tot - rec);
+    statusBadge = `
+      <span class="pill received">In-Hand: ${money(rec)}</span>
+      ${pend > 0 ? `<span class="pill pending">Pending: ${money(pend)}</span>` : `<span class="pill received">Fully Paid</span>`}
+    `;
+  } else {
+    statusBadge = `<span class="pill">Expense: ${money(tot)}</span>`;
+  }
+
+  const qtyStr = r.quantity ? `${r.quantity} ${r.quantityUnit || ''}` : (r.birds ? `${r.birds} birds (${r.weight || ''} ${r.weightUnit || ''})` : '');
+
+  return `
+    <div class="record">
+      <div style="cursor:pointer;flex-grow:1" data-view-dash="${r.id}">
+        <b>${esc(title)} <span style="font-size:12px;font-weight:normal;color:#776d5e">(${qtyStr})</span></b>
+        <small class="muted">${esc(date)} · ${esc(r.notes || r.supplier || r.buyer || 'No notes')}</small>
+        <div style="margin-top:4px">${statusBadge}</div>
+      </div>
+      <div class="actions">
+        <button class="secondary" data-view-dash="${r.id}" title="View Record Dashboard">📊</button>
+        <button class="secondary" data-edit="${r.id}">Edit</button>
+        <button class="danger" data-delete="${r.id}">Delete</button>
+      </div>
+    </div>
+  `;
+}
+
+function wireRecordButtons() {
+  document.querySelectorAll('[data-view-dash]').forEach(b => b.onclick = () => {
+    openRecordDashboard(b.dataset.viewDash);
+  });
+
+  document.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => {
+    const r = data.find(x => x.id === b.dataset.edit);
+    if (r) {
+      editId = r.id;
+      formView($('view'), r.module, r);
+    }
+  });
+
+  document.querySelectorAll('[data-delete]').forEach(b => b.onclick = () => {
+    showConfirm('Delete Record', 'Are you sure you want to remove this record? This action cannot be undone.', () => {
+      data = data.filter(x => x.id !== b.dataset.delete);
+      save();
+      render();
+      toast('Record deleted');
+    });
+  });
+}
+
+function formView(v, key, existing = {}) {
+  const defs = fields[key] || [];
+  const modTitle = modules.find(m => m[2] === key)[0];
+  const isIncomeMod = ['sales','eggs','income'].includes(key);
+  const isMort = key === 'mortality';
+
+  v.innerHTML = `
+    <div class="section-head">
+      <div>
+        <h2>${existing.id ? 'Edit' : 'Add'} ${modTitle} Record</h2>
+        <div class="muted">Enter record details below. Quantity units and single-entry payment inputs enabled.</div>
+      </div>
+      <button class="secondary" id="back">← Back</button>
+    </div>
+    <div class="card">
+      <div class="formgrid">
+        ${defs.map(([id, label, type]) => {
+          const val = existing[id] ?? '';
+          let control = '';
+          if (type.startsWith('select:')) {
+            const opts = type.slice(7).split(',');
+            control = `<select id="f_${id}"><option value="">Select (optional)</option>${opts.map(x => `<option ${val===x?'selected':''}>${x}</option>`).join('')}</select>`;
+          } else if (type === 'textarea') {
+            control = `<textarea id="f_${id}" placeholder="Optional notes...">${esc(val)}</textarea>`;
+          } else {
+            control = `<input id="f_${id}" type="${type}" value="${esc(val)}" ${type==='number'?'step="any"':''}>`;
+          }
+          return `<div class="field"><label>${label}</label>${control}</div>`;
+        }).join('')}
+      </div>
+
+      ${!isMort ? `
+        <div class="amountbox">
+          <b>Financial Calculation & In-Hand Payment</b>
+          <p class="muted" style="margin:5px 0 10px;font-size:13px">
+            ${key==='sales' ? 'Calculated automatically based on your chosen Pricing Model (Per Kg, Per Bird, Per Quintal, or Per Gram).' : 'Calculated automatically from quantity × rate.'}
+          </p>
+          <div style="font-size:14px">Calculated Total Bill: <b id="autoPreview">${money(existing.autoAmount || 0)}</b></div>
+
+          <div class="field" style="margin-top:10px">
+            <label>Actual / Override Total Amount (₹)</label>
+            <input id="manualAmount" type="number" step="any" value="${esc(existing.manualAmount ?? '')}" placeholder="Leave blank to use calculated bill">
+          </div>
+          <div class="amountrow" style="margin-top:8px">
+            <label><input type="radio" name="amountMode" value="auto" ${(existing.amountMode||'auto')==='auto'?'checked':''}> Use calculated amount</label>
+            <label><input type="radio" name="amountMode" value="manual" ${existing.amountMode==='manual'?'checked':''}> Use manual override amount</label>
+          </div>
+
+          <div style="margin-top:10px;font-size:14px">Final Total Bill Amount: <b id="finalPreview">${money(amount(existing))}</b></div>
+
+          ${isIncomeMod ? `
+            <div style="margin-top:14px;padding-top:12px;border-top:1px dashed #d8be6a">
+              <b>Single Payment Entry (In-Hand & Pending)</b>
+              <p class="muted" style="margin:4px 0 8px;font-size:12.5px">Enter only once here. The pending balance is calculated automatically as you type.</p>
+              <div class="calc-grid">
+                <div class="field">
+                  <label>In-Hand Amount Received (₹)</label>
+                  <input id="calcReceived" type="number" step="any" value="${esc(existing.received ?? '')}" placeholder="e.g. 5000">
+                </div>
+                <div class="field">
+                  <label>Pending Amount Left to Receive (₹)</label>
+                  <input id="calcPending" type="number" step="any" value="${esc(existing.pending ?? '')}" placeholder="Auto-calculated">
+                </div>
+              </div>
+              <div style="margin-top:8px;font-size:13px;color:#61513a">
+                Payment Status: <span id="paymentStatusPill" class="pill">Pending Calculation</span>
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      ` : ''}
+
+      <div class="actions">
+        <button id="saveRecord">Save Record</button>
+        <button class="secondary" id="cancel">Cancel</button>
+      </div>
+    </div>
+  `;
+
+  $('back').onclick = $('cancel').onclick = () => render();
+
+  const calc = () => {
+    if (isMort) return;
+    const o = readForm(key, existing);
+    const calculated = autoAmount({...o, module: key});
+    $('autoPreview').textContent = money(calculated);
+    const mode = document.querySelector('input[name="amountMode"]:checked')?.value || 'auto';
+    const manual = $('manualAmount').value;
+    const finalValue = (mode === 'manual' && manual.trim() !== '') ? num(manual) : calculated;
+    $('finalPreview').textContent = money(finalValue);
+
+    if (isIncomeMod) {
+      const rec = num($('calcReceived').value);
+      let pendInput = $('calcPending').value;
+      let pend = 0;
+      if (pendInput === '') {
+        pend = Math.max(0, finalValue - rec);
+        $('calcPending').placeholder = `Remaining: ₹${pend.toLocaleString('en-IN')}`;
+      } else {
+        pend = num(pendInput);
+      }
+
+      const pPill = $('paymentStatusPill');
+      if (rec >= finalValue && finalValue > 0) {
+        pPill.className = 'pill received';
+        pPill.textContent = 'Fully Received in Hand ✅';
+      } else if (rec > 0 && pend > 0) {
+        pPill.className = 'pill pending';
+        pPill.textContent = `Partial: In-Hand ${money(rec)}, Pending ${money(pend)}`;
+      } else if (pend > 0 || finalValue > 0) {
+        pPill.className = 'pill pending';
+        pPill.textContent = `Unpaid: Pending ${money(pend || finalValue)}`;
+      } else {
+        pPill.className = 'pill';
+        pPill.textContent = 'No balance due';
+      }
+    }
+  };
+
+  defs.forEach(([id]) => {
+    const el = $('f_' + id);
+    if (el) {
+      el.addEventListener('input', calc);
+      el.addEventListener('change', calc);
+    }
+  });
+
+  if (!isMort) {
+    $('manualAmount').addEventListener('input', calc);
+    $('manualAmount').addEventListener('change', calc);
+    document.querySelectorAll('input[name="amountMode"]').forEach(x => {
+      x.addEventListener('change', calc);
+    });
+
+    if (isIncomeMod) {
+      $('calcReceived').addEventListener('input', () => {
+        const o = readForm(key, existing);
+        const calculated = autoAmount({...o, module: key});
+        const mode = document.querySelector('input[name="amountMode"]:checked')?.value || 'auto';
+        const manual = $('manualAmount').value;
+        const finalValue = (mode === 'manual' && manual.trim() !== '') ? num(manual) : calculated;
+        const rec = num($('calcReceived').value);
+        $('calcPending').value = Math.max(0, finalValue - rec);
+        calc();
+      });
+      $('calcPending').addEventListener('input', calc);
+    }
+
+    calc();
+  }
+
+  $('saveRecord').onclick = () => {
+    const o = readForm(key, existing);
+    o.module = key;
+
+    if (!isMort) {
+      o.autoAmount = autoAmount(o);
+      o.manualAmount = $('manualAmount').value;
+      o.amountMode = document.querySelector('input[name="amountMode"]:checked')?.value || 'auto';
+
+      if (isIncomeMod) {
+        o.received = $('calcReceived').value;
+        const finalTot = o.amountMode === 'manual' && o.manualAmount !== '' ? num(o.manualAmount) : o.autoAmount;
+        if ($('calcPending').value !== '') {
+          o.pending = $('calcPending').value;
+        } else {
+          o.pending = Math.max(0, finalTot - num(o.received));
+        }
+      }
+    } else {
+      o.autoAmount = 0;
+      o.manualAmount = 0;
+      o.amountMode = 'auto';
+    }
+
+    o.id = existing.id || ('rec_' + Date.now() + '_' + Math.random().toString(36).substring(2,7));
+    o.updatedAt = new Date().toISOString();
+
+    if (existing.id) {
+      data = data.map(x => x.id === existing.id ? o : x);
+    } else {
+      data.push(o);
+    }
+    save();
+    toast('Record saved successfully');
+    render();
+  };
+}
+
+function readForm(key, base) {
+  const o = {...base};
+  (fields[key] || []).forEach(([id]) => {
+    const el = $('f_' + id);
+    o[id] = el ? el.value : '';
+  });
+  return o;
+}
+
+function reports(v) {
+  const m = computeMetrics();
+  const maxFinance = Math.max(m.totalIncome, m.totalExpenditure, 1);
+  const maxExpenses = Math.max(m.chicksCost, m.medicineCost, m.feedCost, m.otherExpenses, 1);
+
+  v.innerHTML = `
+    <div class="section-head">
+      <div>
+        <h2>Complete Farm Financial & Flock Dashboard 📊</h2>
+        <div class="muted">All counts, mortality deductions, payment statuses, and graph calculator</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card stat">
+        <small>Total Chicks Purchased</small>
+        <strong>${m.totalChicksBought} birds</strong>
+      </div>
+      <div class="card stat" style="background:#fff2ef">
+        <small>Total Chicks Died (Mortality)</small>
+        <strong style="color:#b23b20">${m.totalChicksDied} birds</strong>
+      </div>
+      <div class="card stat">
+        <small>Total Birds Sold</small>
+        <strong>${m.totalBirdsSold} birds</strong>
+      </div>
+      <div class="card stat" style="background:#eaf5e6">
+        <small>Live Chicks Remaining (Auto)</small>
+        <strong style="color:#286b24">${m.liveBirds} birds</strong>
+      </div>
+      <div class="card stat">
+        <small>Eggs (Collected / Sold)</small>
+        <strong>${m.totalEggsCollected} / ${m.totalEggsSold}</strong>
+      </div>
+      <div class="card stat">
+        <small>Medicine & Vaccine Charges</small>
+        <strong style="color:#b23b20">${money(m.medicineCost)}</strong>
+      </div>
+      <div class="card stat">
+        <small>Feed Total Expenses</small>
+        <strong style="color:#b23b20">${money(m.feedCost)}</strong>
+      </div>
+      <div class="card stat">
+        <small>Other Overhead Expenses</small>
+        <strong style="color:#b23b20">${money(m.otherExpenses)}</strong>
+      </div>
+      <div class="card stat">
+        <small>Total Expenditure</small>
+        <strong style="color:#b23b20">${money(m.totalExpenditure)}</strong>
+      </div>
+      <div class="card stat">
+        <small>Total Gross Sales Revenue</small>
+        <strong style="color:#286b24">${money(m.totalIncome)}</strong>
+      </div>
+      <div class="card stat">
+        <small>In-Hand Income Received</small>
+        <strong style="color:#286b24">${money(m.incomeReceived)}</strong>
+      </div>
+      <div class="card stat">
+        <small>Pending Payment Due</small>
+        <strong style="color:#b84025">${money(m.incomePending)}</strong>
+      </div>
+      <div class="card stat">
+        <small>Net In-Hand Balance</small>
+        <strong style="color:${m.netBalance>=0?'#286b24':'#b23b20'}">${money(m.netBalance)}</strong>
+      </div>
+      <div class="card stat" style="grid-column:1/-1;background:${m.netProfitLoss>=0?'#eaf6e7':'#fbeae6'}">
+        <small style="font-weight:600;font-size:14px;color:${m.netProfitLoss>=0?'#286b24':'#a82f1b'}">
+          ${m.netProfitLoss >= 0 ? '🎉 Overall Status: Net Profit' : '⚠️ Overall Status: Net Loss'}
+        </small>
+        <strong style="font-size:28px;color:${m.netProfitLoss>=0?'#286b24':'#a82f1b'}">
+          ${money(m.netProfitLoss)}
+        </strong>
+      </div>
+    </div>
+
+    <div class="chart-box">
+      <h3 style="margin:0 0 4px;color:#503f29">Profit / Loss & Revenue Graph</h3>
+      <p class="muted" style="margin:0 0 14px;font-size:13px">Proportional graph of revenue, in-hand cash, pending payments, and expenditure</p>
+      
+      <div class="chart-bars">
+        <div class="bar-row">
+          <div class="bar-label">Total Revenue (${money(m.totalIncome)})</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${Math.round((m.totalIncome/maxFinance)*100)}%;background:#4ca643"></div>
+          </div>
+          <div class="bar-val" style="color:#286b24">${Math.round((m.totalIncome/maxFinance)*100)}%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">In-Hand Received (${money(m.incomeReceived)})</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${Math.round((m.incomeReceived/maxFinance)*100)}%;background:#81c784"></div>
+          </div>
+          <div class="bar-val" style="color:#286b24">${Math.round((m.incomeReceived/maxFinance)*100)}%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Pending Due (${money(m.incomePending)})</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${Math.round((m.incomePending/maxFinance)*100)}%;background:#e57373"></div>
+          </div>
+          <div class="bar-val" style="color:#c2472b">${Math.round((m.incomePending/maxFinance)*100)}%</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Total Expenses (${money(m.totalExpenditure)})</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${Math.round((m.totalExpenditure/maxFinance)*100)}%;background:#e05244"></div>
+          </div>
+          <div class="bar-val" style="color:#b23b20">${Math.round((m.totalExpenditure/maxFinance)*100)}%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-box">
+      <h3 style="margin:0 0 4px;color:#503f29">Expense Category Distribution</h3>
+      <p class="muted" style="margin:0 0 14px;font-size:13px">Breakdown across chicks purchase, feed, medicine, and overheads</p>
+
+      <div class="chart-bars">
+        <div class="bar-row">
+          <div class="bar-label">Chick Purchases</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${Math.round((m.chicksCost/maxExpenses)*100)}%;background:#ffb74d"></div>
+          </div>
+          <div class="bar-val">${money(m.chicksCost)}</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Feed Management</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${Math.round((m.feedCost/maxExpenses)*100)}%;background:#ffd54f"></div>
+          </div>
+          <div class="bar-val">${money(m.feedCost)}</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Medicine & Vaccines</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${Math.round((m.medicineCost/maxExpenses)*100)}%;background:#4fc3f7"></div>
+          </div>
+          <div class="bar-val">${money(m.medicineCost)}</div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Other Expenses</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${Math.round((m.otherExpenses/maxExpenses)*100)}%;background:#ba68c8"></div>
+          </div>
+          <div class="bar-val">${money(m.otherExpenses)}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-box">
+      <h3 style="margin:0 0 6px;color:#503f29">Interactive Profit / Loss Simulator</h3>
+      <p class="muted" style="margin:0 0 12px;font-size:13px">Simulate sales and extra costs on remaining flock (${m.liveBirds} birds)</p>
+
+      <div class="calc-grid">
+        <div class="field">
+          <label>Projected Birds to Sell (from ${m.liveBirds} live)</label>
+          <input id="simBirds" type="number" placeholder="Number of birds" value="${Math.min(100, m.liveBirds)}">
+        </div>
+        <div class="field">
+          <label>Expected Price per Bird (₹)</label>
+          <input id="simPrice" type="number" placeholder="Price in ₹" value="250">
+        </div>
+        <div class="field">
+          <label>Extra Projected Feed & Medicine (₹)</label>
+          <input id="simExtraExp" type="number" placeholder="Extra cost in ₹" value="2000">
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:14px;background:#fffdfa;border:1px solid #e0d0b8">
+        <div style="font-size:13.5px;color:#554a39">
+          Projected Extra Revenue: <b id="projRev">${money(Math.min(100, m.liveBirds) * 250)}</b> | Extra Cost: <b id="projExp">${money(2000)}</b>
+        </div>
+        <div style="font-size:16px;margin-top:6px">
+          Estimated Projected Net Profit: <b id="projProfit" style="color:#286b24">${money(m.netProfitLoss + (Math.min(100, m.liveBirds) * 250) - 2000)}</b>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const recalcSim = () => {
+    const sb = num($('simBirds').value);
+    const sp = num($('simPrice').value);
+    const se = num($('simExtraExp').value);
+    const simRev = sb * sp;
+    $('projRev').textContent = money(simRev);
+    $('projExp').textContent = money(se);
+    const projectedFinal = (m.netProfitLoss + simRev) - se;
+    const pEl = $('projProfit');
+    pEl.textContent = money(projectedFinal);
+    pEl.style.color = projectedFinal >= 0 ? '#286b24' : '#b23b20';
+  };
+
+  $('simBirds').oninput = recalcSim;
+  $('simPrice').oninput = recalcSim;
+  $('simExtraExp').oninput = recalcSim;
+}
+
+function settings(v) {
+  v.innerHTML = `
+    <div class="section-head">
+      <div>
+        <h2>Settings & Data ⚙️</h2>
+        <div class="muted">Manage your farm data, exports, and backups</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <label>Farm Name</label>
+        <input id="farmName" value="${esc(localStorage.getItem('pp_farm') || '')}" placeholder="e.g. Sunrise Poultry Farm">
+      </div>
+      <div class="actions">
+        <button id="saveSettings">Save Name</button>
+        <button class="secondary" id="exportCsv">Export Complete CSV</button>
+        <button class="secondary" id="backupNow">Download Backup (JSON)</button>
+      </div>
+
+      <div class="notice">
+        <b>Data Storage Notice:</b> All farm records are securely stored directly inside this browser. Make regular JSON backups to preserve your records when clearing browser cache or switching devices.
+      </div>
+
+      <button class="danger" id="clearAll" style="margin-top:12px">Erase All Records</button>
+    </div>
+  `;
+
+  $('saveSettings').onclick = () => {
+    localStorage.setItem('pp_farm', $('farmName').value.trim());
+    toast('Farm name saved');
+    render();
+  };
+  $('backupNow').onclick = backup;
+  $('exportCsv').onclick = csv;
+  $('clearAll').onclick = () => {
+    showConfirm('Erase All Records', 'Are you sure you want to permanently delete all records on this device? Be sure you have a backup.', () => {
+      data = [];
+      save();
+      render();
+      toast('All records removed');
+    });
+  };
+}
+
+function backup() {
+  const blob = new Blob([JSON.stringify({
+    app: 'PoultryPal',
+    version: 3,
+    exportedAt: new Date().toISOString(),
+    farmName: localStorage.getItem('pp_farm') || '',
+    records: data
+  }, null, 2)], {type: 'application/json'});
+  download(blob, `PoultryPal-Backup-${new Date().toISOString().slice(0,10)}.json`);
+  toast('Backup downloaded');
+}
+
+function csv() {
+  if (!data.length) {
+    toast('No records to export');
+    return;
+  }
+  const keys = [...new Set(data.flatMap(x => Object.keys(x)))];
+  const rows = [
+    keys.join(','),
+    ...data.map(x => keys.map(k => '"' + String(x[k] ?? '').replace(/"/g, '""') + '"').join(','))
+  ];
+  download(new Blob([rows.join('
+')], {type: 'text/csv'}), `PoultryPal-Records-${new Date().toISOString().slice(0,10)}.csv`);
+  toast('CSV exported');
+}
+
+function download(blob, name) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+$('backupBtn').onclick = backup;
+$('restoreBtn').onclick = () => $('restoreFile').click();
+
+$('restoreFile').onchange = async e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  try {
+    const text = await f.text();
+    const obj = JSON.parse(text);
+    if (!Array.isArray(obj.records)) throw new Error();
+    showConfirm('Restore Backup', 'This will replace the records on this device with the backup file. Proceed?', () => {
+      data = obj.records;
+      save();
+      if (obj.farmName) localStorage.setItem('pp_farm', obj.farmName);
+      render();
+      toast('Backup restored successfully');
+    });
+  } catch (err) {
+    toast('Failed to read backup file');
+  }
+  e.target.value = '';
+};
+
+$('photoInput').onchange = async e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  if (f.size > 5 * 1024 * 1024) {
+    toast('Please choose an image under 5 MB');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    localStorage.setItem('pp_photo', reader.result);
+    $('heroPhoto').src = reader.result;
+    toast('Photo updated');
+  };
+  reader.readAsDataURL(f);
+  e.target.value = '';
+};
+
+$('resetPhoto').onclick = () => {
+  localStorage.removeItem('pp_photo');
+  $('heroPhoto').src = CHICK_DATA_URL;
+  toast('Photo reset to default');
+};
+
+// Initialize
+$('heroPhoto').src = localStorage.getItem('pp_photo') || CHICK_DATA_URL;
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "PoultryPal Farm Manager",
+  "short_name": "PoultryPal",
+  "description": "Offline-ready poultry farm record tracker & financial calculator",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#fffaf0",
+  "theme_color": "#fff4c7",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
